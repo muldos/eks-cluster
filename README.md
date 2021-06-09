@@ -1,14 +1,41 @@
-# Welcome to your CDK TypeScript project!
+# EKS Cluster cheat sheet
 
-This is a blank project for TypeScript development with CDK.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+```bash
+aws2 eks update-kubeconfig --name xyzxa --region eu-west-3 --role-arn arn:aws:iam::123456:role/EksClusterStack-helloeksMastersRoleABC-123 --profile eks
+```
+```bash
+kubectl cluster-info
+```
+```bash
+kubectl create -f api-rc.yaml
+```
+```bash
+kubectl expose rc api-controller --type=LoadBalancer --name graphql-http
+```
+```bash
+kubectl get svc
+```
+<pre>
+ +-----------------------------------------------+               +-----------------+
+ |                 EKS Cluster                   |    kubectl    |                 |
+ |-----------------------------------------------|<-------------+| Kubectl Handler |
+ |                                               |               |                 |
+ |                                               |               +-----------------+
+ | +--------------------+    +-----------------+ |
+ | |                    |    |                 | |
+ | | Managed Node Group |    | Fargate Profile | |               +-----------------+
+ | |                    |    |                 | |               |                 |
+ | +--------------------+    +-----------------+ |               | Cluster Handler |
+ |                                               |               |                 |
+ +-----------------------------------------------+               +-----------------+
+    ^                                   ^                          +
+    |                                   |                          |
+    | connect self managed capacity     |                          | aws-sdk
+    |                                   | create/update/delete     |
+    +                                   |                          v
+ +--------------------+                 +              +-------------------+
+ |                    |                 --------------+| eks.amazonaws.com |
+ | Auto Scaling Group |                                +-------------------+
+ |                    |
+ +--------------------+
+ </pre>
