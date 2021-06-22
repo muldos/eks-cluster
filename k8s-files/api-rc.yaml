@@ -1,41 +1,19 @@
-{
-  "kind": "ReplicationController",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "api-controller",
-    "labels": {
-      "state": "serving"
-    }
-  },
-  "spec": {
-    "replicas": 1,
-    "selector": {
-      "app": "api"
-    },
-    "template": {
-      "metadata": {
-        "labels": {
-          "app": "api"
-        }
-      },
-      "spec": {
-        "volumes": null,
-        "containers": [
-          {
-            "name": "dgs-graphql",
-            "image": "muldos/dgs-skeleton:1.1.0",
-            "ports": [
-              {
-                "containerPort": 8080,
-                "protocol": "TCP"
-              }
-            ],
-            "imagePullPolicy": "IfNotPresent"
-          }
-        ],
-        "restartPolicy": "Always",
-        "dnsPolicy": "ClusterFirst"
-      }
-    }
-  }
-}
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: api-controller
+spec:
+  replicas: 2
+  selector:
+    app: api
+  template:
+    metadata:
+      name: api
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: muldos/dgs-skeleton:1.2.0
+          ports:
+            - containerPort: 8080
