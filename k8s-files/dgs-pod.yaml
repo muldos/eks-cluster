@@ -4,7 +4,7 @@ metadata:
 name: api-manual
 spec:
 containers:
-- image: muldos/dgs-skeleton
+- image: muldos/dgs-skeleton:1.2.0
 name: api
 ports:
 - containerPort: 8080
