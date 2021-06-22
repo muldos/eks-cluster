@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+name: api-manual
+spec:
+containers:
+- image: muldos/dgs-skeleton
+name: api
+ports:
+- containerPort: 8080
+protocol: TCP
