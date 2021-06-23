@@ -3,9 +3,9 @@ kind: Pod
 metadata:
 name: api-manual
 spec:
-containers:
-- image: muldos/dgs-skeleton:1.2.0
-name: api
-ports:
-- containerPort: 8080
-protocol: TCP
+  containers:
+  - image: muldos/dgs-skeleton:1.2.0
+  name: api
+  ports:
+  - containerPort: 8080
+    protocol: TCP
