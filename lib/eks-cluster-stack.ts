@@ -6,11 +6,15 @@ export class EksClusterStack extends cdk.Stack {
     super(scope, id, props);
 
     // provisiong a cluster
-const cluster = new eks.Cluster(this, 'hello-eks', {
+const cluster = new eks.Cluster(this, 'custom-eks-cluster', {
   version: eks.KubernetesVersion.V1_20,
-  defaultCapacity:1,
-  defaultCapacityInstance: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM)
+  defaultCapacity:0
 });
-
+cluster.addNodegroupCapacity('custom-node-group', {
+  desiredSize: 1,
+  minSize: 1,
+  instanceTypes: [ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM)],
+  remoteAccess: {sshKeyName: "eks-nodes"}
+});
   }
 }
