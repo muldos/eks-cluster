@@ -52,3 +52,9 @@ kubectl get svc
  |                    |
  +--------------------+
  </pre>
+
+Use vscode as kebectl default yaml editor: 
+
+```
+set KUBE_EDITOR=code.cmd --wait
+```

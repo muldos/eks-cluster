@@ -8,15 +8,17 @@ export class EksClusterStack extends cdk.Stack {
     // provisiong a cluster
     const cluster = new eks.Cluster(this, 'custom-eks-cluster', {
       version: eks.KubernetesVersion.V1_20,
-      defaultCapacity: 0,
-      //for testing purpose to be able to ssh directly to the node using a public IP
-      vpcSubnets: [{ subnetType: ec2.SubnetType.PUBLIC }]
+      defaultCapacity: 0
     });
     cluster.addNodegroupCapacity('custom-node-group', {
-      desiredSize: 1,
+      desiredSize: 2,
       minSize: 1,
+      maxSize: 2,
       instanceTypes: [ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM)],
-      remoteAccess: { sshKeyName: "eks-nodes" }
+      //for testing purpose to be able to 
+      //ssh directly to the node using a public IP
+      remoteAccess: { sshKeyName: "eks-nodes" },
+      subnets: {subnetType: ec2.SubnetType.PUBLIC}
     });
   }
 }
