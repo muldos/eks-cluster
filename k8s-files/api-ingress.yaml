@@ -3,11 +3,18 @@ kind: Ingress
 metadata:
   name: api-ingress
 spec:
+  tls:
+    - hosts:
+        - api.davidrobin.net
+      secretName: tls-secret
   rules:
     - host: api.davidrobin.net
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: api-nodeport
-              servicePort: 80
+              service:
+                name: api-nodeport
+                port:
+                  number: 80
