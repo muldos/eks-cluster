@@ -32,4 +32,5 @@ spec:
               containerPort: 8443
       volumes:
         - name: jsondb
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: apijsondb-pvc
