@@ -4,13 +4,19 @@ metadata:
   name: api-manual
 spec:
   containers:
-  - image: muldos/dgs-skeleton:1.2.2
-    name: api
-    livenessProbe:
-      httpGet:
-        path: /health/status
-        port: 8080
-      initialDelaySeconds: 10
-    ports:
-    - containerPort: 8080
-      protocol: TCP
+    - image: muldos/dgs-skeleton:1.4.2
+      name: api
+      env:
+        - name: SAMPLE_ENDPOINT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: dgs-config
+              key: auth-url
+      livenessProbe:
+        httpGet:
+          path: /health/status
+          port: 8080
+        initialDelaySeconds: 10
+      ports:
+        - containerPort: 8080
+          protocol: TCP
