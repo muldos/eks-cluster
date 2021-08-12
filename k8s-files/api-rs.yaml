@@ -15,11 +15,24 @@ spec:
     spec:
       containers:
         - name: api
-          image: muldos/dgs-skeleton:1.4.0
+          image: muldos/dgs-skeleton:1.5.0
           volumeMounts:
             - name: jsondb
               mountPath: /var/db_data
-
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SAMPLE_ENDPOINT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: dgs-config
+                  key: auth-url
           livenessProbe:
             httpGet:
               path: /health/status
