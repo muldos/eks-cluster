@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+
+spec:
+  selector:
+    matchLabels:
+      app: api
+  replicas: 2
+  template:
+    metadata:
+      name: api
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: muldos/dgs-skeleton:1.5.0
+          volumeMounts:
+            - name: jsondb
+              mountPath: /var/db_data
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SAMPLE_ENDPOINT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: dgs-config
+                  key: auth-url
+          livenessProbe:
+            httpGet:
+              path: /health/status
+              port: 8080
+            initialDelaySeconds: 10
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+      volumes:
+        - name: jsondb
+          persistentVolumeClaim:
+            claimName: apijsondb-pvc
