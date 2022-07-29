@@ -1,19 +1,16 @@
 # EKS Cluster cheat sheet
 
+Then upadte the kubectl config using the output command like
+
 ```bash
 aws2 eks update-kubeconfig --name xyzxa --region eu-west-3 --role-arn arn:aws:iam::123456:role/EksClusterStack-helloeksMastersRoleABC-123 --profile eks
 ```
 
-<u>Optional</u> : edit `~/.kube/config` to replace
-
-`command: aws`
-
-by
-
-`command: aws2`
+Check that everything is ok using
 
 ```bash
 kubectl cluster-info
+kubectl describe nodes
 ```
 
 ```bash
@@ -53,8 +50,18 @@ kubectl get svc
  +--------------------+
  </pre>
 
-Use vscode as kubectl default yaml editor: 
+Use vscode as kubectl default yaml editor:
 
 ```
 set KUBE_EDITOR=code.cmd --wait
+```
+
+Deploy / undeploy a public nginx web server using helm
+
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install mywebserver bitnami/nginx
+kubectl get service mywebserver-nginx -o wide
+helm uninstall mywebserver
 ```
