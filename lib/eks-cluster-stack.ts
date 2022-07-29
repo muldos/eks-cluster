@@ -13,11 +13,11 @@ export class EksClusterStack extends Stack {
       defaultCapacity: 0,
     });
     cluster.addNodegroupCapacity("custom-node-group", {
-      desiredSize: 2,
+      desiredSize: 1,
       minSize: 1,
       maxSize: 2,
       instanceTypes: [
-        ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+        ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.LARGE),
       ],
       //for testing purpose to be able to
       //ssh directly to the node using a public IP
