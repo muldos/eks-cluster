@@ -1,12 +1,19 @@
 # EKS Cluster cheat sheet
 
-Then upadte the kubectl config using the output command like
+Run
 
-```bash
-aws2 eks update-kubeconfig --name xyzxa --region eu-west-3 --role-arn arn:aws:iam::123456:role/EksClusterStack-helloeksMastersRoleABC-123 --profile eks
+```
+npm install
+cdk deploy
 ```
 
-Check that everything is ok using
+Then update the kubectl config using the outputed command, that should be like
+
+```bash
+aws eks update-kubeconfig --name xyzxa --region eu-west-3 --role-arn arn:aws:iam::123456:role/EksClusterStack-helloeksMastersRoleABC-123 --profile eks
+```
+
+Check that everything is ok using kubectl
 
 ```bash
 kubectl cluster-info
