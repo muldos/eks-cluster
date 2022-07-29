@@ -21,7 +21,7 @@ export class EksClusterStack extends Stack {
       ],
       //for testing purpose to be able to
       //ssh directly to the node using a public IP
-      remoteAccess: { sshKeyName: "eks-nodes" },
+      remoteAccess: { sshKeyName: "laptop-keypair" },
       subnets: { subnetType: ec2.SubnetType.PUBLIC },
     });
   }
