@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stateapp
+spec:
+  serviceName: stateapp
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stateapp # has to match .spec.template.metadata.labels
+  template:
+    metadata:
+      labels:
+        app: stateapp
+    spec:
+      containers:
+        - name: stateapp
+          image: muldos/statefull-app:step1
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: data
+              mountPath: /var/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+        accessModes:
+          - ReadWriteOnce
