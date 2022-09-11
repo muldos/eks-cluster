@@ -1,4 +1,4 @@
-# aws ec2 create-volume --availability-zone=eu-west-3a --size=1 --volume-type=gp3 --region eu-west-3 --profile eks
+# aws ec2 create-volume --availability-zone=eu-west-3b --size=1 --volume-type=gp3 --region eu-west-3 --profile eks
 kind: List
 apiVersion: v1
 items:
@@ -6,6 +6,8 @@ items:
     kind: PersistentVolume
     metadata:
       name: pv-a
+      labels:
+        type: custompv
     spec:
       capacity:
         storage: 1Gi
@@ -19,6 +21,8 @@ items:
     kind: PersistentVolume
     metadata:
       name: pv-b
+      labels:
+        type: custompv
     spec:
       capacity:
         storage: 1Gi
@@ -32,6 +36,8 @@ items:
     kind: PersistentVolume
     metadata:
       name: pv-c
+      labels:
+        type: custompv
     spec:
       capacity:
         storage: 1Gi

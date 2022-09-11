@@ -72,3 +72,10 @@ helm install mywebserver bitnami/nginx
 kubectl get service mywebserver-nginx -o wide
 helm uninstall mywebserver
 ```
+
+listing context and clean them
+
+```
+kubectl config get-contexts
+kubectl config unset contexts.arn:aws:eks:eu-west-3:123471865432:cluster/customekscluster14B2EE81-fc8b008...
+```
