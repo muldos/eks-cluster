@@ -9,7 +9,7 @@ export class EksClusterStack extends Stack {
 
     // provisionning a cluster
     const cluster = new eks.Cluster(this, "custom-eks-cluster", {
-      version: eks.KubernetesVersion.V1_20,
+      version: eks.KubernetesVersion.V1_21,
       defaultCapacity: 0,
     });
     cluster.addNodegroupCapacity("custom-node-group", {
