@@ -8,11 +8,11 @@ export class EksClusterStack extends Stack {
     super(scope, id, props);
 
     // provisionning a cluster
-    const cluster = new eks.Cluster(this, "custom-eks-cluster", {
+    const cluster = new eks.Cluster(this, "davidro-emea-demo-cluster", {
       version: eks.KubernetesVersion.V1_21,
       defaultCapacity: 0,
     });
-    cluster.addNodegroupCapacity("custom-node-group", {
+    cluster.addNodegroupCapacity("davidro-emea-demo-nodegroup", {
       desiredSize: 1,
       minSize: 0,
       maxSize: 2,
@@ -21,7 +21,7 @@ export class EksClusterStack extends Stack {
       ],
       //for testing purpose to be able to
       //ssh directly to the node using a public IP
-      remoteAccess: { sshKeyName: "laptop-keypair" },
+      remoteAccess: { sshKeyName: "davidro-emea-laptop" },
       subnets: {
         subnetType: ec2.SubnetType.PUBLIC,
       },
