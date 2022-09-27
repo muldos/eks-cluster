@@ -8,19 +8,15 @@ import { aws_ec2 as ec2 } from "aws-cdk-lib";
 export class EksClusterStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-    const resourcesPrefixParam = new CfnParameter(this, "resourcesPrefix", {
-      type: "String",
-      description: "The prefix for all the created resources.",
-    });
-    const prefix = resourcesPrefixParam.valueAsString;
+    const prefix = this.node.tryGetContext("resourcesPrefix");
     // provisionning a cluster
-    const cluster = new eks.Cluster(this, `david-demo-cluster`, {
+    const cluster = new eks.Cluster(this, `${prefix}-cluster`, {
       version: eks.KubernetesVersion.V1_21,
       defaultCapacity: 0,
     });
 
     // create a managed node group for the cluster
-    cluster.addNodegroupCapacity(`david-demo-nodegroup`, {
+    cluster.addNodegroupCapacity(`${prefix}-nodegroup`, {
       desiredSize: 1,
       minSize: 0,
       maxSize: 3,
@@ -29,17 +25,17 @@ export class EksClusterStack extends Stack {
       ],
     });
     // create a file store bucket
-    const filestoreBucket = new s3.Bucket(this, `david-filestore`, {
+    const filestoreBucket = new s3.Bucket(this, `${prefix}-filestore`, {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
-
-    const serviceAccRole = new iam.Role(this, `david-bucket-access-role`, {
+    const roleName = `${prefix}-s3filestore-rw-role`;
+    const serviceAccRole = new iam.Role(this, roleName, {
       assumedBy: new iam.WebIdentityPrincipal(
         //using this property will auto create the eks oidc provider (lazy init)
         cluster.openIdConnectProvider.openIdConnectProviderArn
       ),
       managedPolicies: [],
-      roleName: `david-filestore-s3-role`,
+      roleName: roleName,
       description:
         "This role is used via artifactory pods service accounts to use the filestore bucket",
     });
