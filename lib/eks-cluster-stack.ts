@@ -17,7 +17,7 @@ export class EksClusterStack extends Stack {
 
     // create a managed node group for the cluster
     cluster.addNodegroupCapacity(`${prefix}-nodegroup`, {
-      desiredSize: 1,
+      desiredSize: 2,
       minSize: 0,
       maxSize: 3,
       instanceTypes: [
