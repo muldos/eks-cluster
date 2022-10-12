@@ -13,10 +13,13 @@ export class EksClusterStack extends Stack {
     const dbLogin = this.node.tryGetContext("dbLogin");
     const dbPwd = this.node.tryGetContext("dbPwd");
 
-    // provisionning a cluster
+    // provisionning an EKS cluster and setup the alb ingress controller
     const cluster = new eks.Cluster(this, `${prefix}-cluster`, {
       version: eks.KubernetesVersion.V1_21,
       defaultCapacity: 0,
+      albController: {
+        version: eks.AlbControllerVersion.V2_4_1,
+      }, 
     });
 
     // create a managed node group for the cluster
@@ -28,10 +31,11 @@ export class EksClusterStack extends Stack {
         ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE),
       ],
     });
-    // create a file store bucket
+    // create a filestore bucket
     const filestoreBucket = new s3.Bucket(this, `${prefix}-filestore`, {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
+    // create an IAM role with read / write permissions on this bucket and add the cluster's OIDC provider as trusted entity to this role
     const roleName = `${prefix}-s3filestore-rw-role`;
     const serviceAccRole = new iam.Role(this, roleName, {
       assumedBy: new iam.WebIdentityPrincipal(
