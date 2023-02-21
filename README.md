@@ -4,7 +4,7 @@ Run
 
 ```
 npm install
-cdk deploy
+cdk deploy --context resourcesPrefix=myPrefix --context dbLogin=root dbPwd=root
 ```
 
 Then update the kubectl config using the outputed command, that should be like

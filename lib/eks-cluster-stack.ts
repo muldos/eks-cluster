@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { Stack, StackProps, Tags, CfnParameter, CfnOutput } from "aws-cdk-lib";
+import { Stack, StackProps, Tags, CfnOutput } from "aws-cdk-lib";
 import { aws_eks as eks } from "aws-cdk-lib";
 import { aws_s3 as s3 } from "aws-cdk-lib";
 import { aws_iam as iam } from "aws-cdk-lib";
@@ -13,9 +13,14 @@ export class EksClusterStack extends Stack {
     const dbLogin = this.node.tryGetContext("dbLogin");
     const dbPwd = this.node.tryGetContext("dbPwd");
 
+    // clusterAdmin is the IAM role you would assume when executing kubectl against your EKS cluster.
+    const clusterAdmin = new iam.Role(this, 'AdminRole', {
+      assumedBy: new iam.AccountRootPrincipal()
+    });
     // provisionning an EKS cluster and setup the alb ingress controller
     const cluster = new eks.Cluster(this, `${prefix}-cluster`, {
       version: eks.KubernetesVersion.V1_21,
+      mastersRole: clusterAdmin,
       defaultCapacity: 0,
       albController: {
         version: eks.AlbControllerVersion.V2_4_1,
