@@ -1,17 +1,15 @@
 import { Construct } from "constructs";
 import { Stack, StackProps, Tags, CfnOutput } from "aws-cdk-lib";
 import { aws_eks as eks } from "aws-cdk-lib";
-import { aws_s3 as s3 } from "aws-cdk-lib";
+//import { aws_s3 as s3 } from "aws-cdk-lib";
 import { aws_iam as iam } from "aws-cdk-lib";
 import { aws_ec2 as ec2 } from "aws-cdk-lib";
-import * as rds from 'aws-cdk-lib/aws-rds';
+//import * as rds from 'aws-cdk-lib/aws-rds';
 
 export class EksClusterStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     const prefix = this.node.tryGetContext("resourcesPrefix");
-    const dbLogin = this.node.tryGetContext("dbLogin");
-    const dbPwd = this.node.tryGetContext("dbPwd");
 
     // clusterAdmin is the IAM role you would assume when executing kubectl against your EKS cluster.
     const clusterAdmin = new iam.Role(this, 'AdminRole', {
@@ -19,12 +17,12 @@ export class EksClusterStack extends Stack {
     });
     // provisionning an EKS cluster and setup the alb ingress controller
     const cluster = new eks.Cluster(this, `${prefix}-cluster`, {
-      version: eks.KubernetesVersion.V1_21,
+      version: eks.KubernetesVersion.V1_23,
       mastersRole: clusterAdmin,
       defaultCapacity: 0,
-      albController: {
+      /*albController: {
         version: eks.AlbControllerVersion.V2_4_1,
-      }, 
+      }, */
     });
 
     // create a managed node group for the cluster
@@ -36,6 +34,7 @@ export class EksClusterStack extends Stack {
         ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE),
       ],
     });
+    /*
     // create a filestore bucket
     const filestoreBucket = new s3.Bucket(this, `${prefix}-filestore`, {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -63,16 +62,17 @@ export class EksClusterStack extends Stack {
     });
 
     dbSG.addIngressRule(cluster.clusterSecurityGroup,  ec2.Port.tcp(5432), 'allow postgres from cluster nodes');
-    const dbInstance = new rds.DatabaseInstance(this, `${prefix}-db`, {
+    const artifactoryDbInstance = new rds.DatabaseInstance(this, `${prefix}-db`, {
       engine: rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_13_4 }),
       // T3.medium
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MEDIUM),
       securityGroups: [dbSG],
-      credentials: rds.Credentials.fromPassword(dbLogin, dbPwd),
+      storageEncrypted: true,
+      databaseName: 'artifactory',
+      credentials: rds.Credentials.fromGeneratedSecret(`${prefix}-rtdb-secret`),
       vpc: cluster.vpc,
       vpcSubnets: {
-        
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       }
     });
 
@@ -82,7 +82,8 @@ export class EksClusterStack extends Stack {
     });
     new CfnOutput(this, "ArtifactoryFilestoreBucketName", {
       value: filestoreBucket.bucketName,
-    });
+    }); 
+    */
     Tags.of(cluster).add("jfrog:owner", prefix);
     Tags.of(cluster).add("jfrog:env", "soleng-demo");
   }

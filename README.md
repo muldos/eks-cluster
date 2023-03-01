@@ -4,8 +4,11 @@ Run
 
 ```
 npm install
-cdk deploy --context resourcesPrefix=myPrefix --context dbLogin=root dbPwd=root
+export CDK_DEFAULT_ACCOUNT= ...
+export CDK_DEFAULT_REGION= ...
+cdk deploy --context resourcesPrefix=myPrefix 
 ```
+During the resources creation, CDK will create a secret for the database, to get the credentials you'll need to get them from the secret created (in this case myprefix-rtdb-secret)
 
 Then update the kubectl config using the outputed command, that should be like
 
